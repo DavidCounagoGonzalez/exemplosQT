@@ -1,7 +1,8 @@
 import sys
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtSql import QSqlDatabase, QSqlTableModel
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QTableView, QWidget, QPushButton, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QTableView, QWidget, QPushButton, QHBoxLayout, \
+    QLineEdit
 
 
 class FiestraTable(QMainWindow):
@@ -35,6 +36,11 @@ class FiestraTable(QMainWindow):
 
         caixaV.addWidget(tlvTaboa)
 
+        self.ledDni = QLineEdit()
+        self.ledDni.setPlaceholderText("Introduza o DNI")
+        self.ledDni.returnPressed.connect(self.on_ledDni_returnPressed)
+        caixaV.addWidget(self.ledDni)
+
         caixaH = QHBoxLayout()
         caixaV.addLayout(caixaH)
         btnActualizarBD = QPushButton("Actualizar")
@@ -44,8 +50,6 @@ class FiestraTable(QMainWindow):
         btnCancelar = QPushButton("Cancelar")
         btnCancelar.clicked.connect(self.on_btnCancelar_clicked)
         caixaH.addWidget(btnCancelar)
-
-
 
         contedor = QWidget()
         contedor.setLayout(caixaV)
@@ -60,7 +64,10 @@ class FiestraTable(QMainWindow):
     def on_btnCancelar_clicked(self):
         self.modelo.revertAll()
 
-
+    def on_ledDni_returnPressed(self):
+        #filtro = 'dni = "{}"'.format(self.ledDni.text())
+        filtro = 'dni LIKE "%{}%"'.format(self.ledDni.text())
+        self.modelo.setFilter(filtro)
 
 if __name__ == "__main__":
     aplicacion = QApplication(sys.argv)
